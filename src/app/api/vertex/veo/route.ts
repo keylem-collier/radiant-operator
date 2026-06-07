@@ -31,7 +31,16 @@ export async function POST(request: Request) {
         operationName: body.operationName,
       });
       log.info("veo poll", { done: result.done, ms: Date.now() - started });
-      return Response.json(result);
+      // Never return the inline base64 video here — a multi-MB JSON response
+      // exceeds the serverless response limit on the deployed runtime (the
+      // reason video worked locally but not on live). The client pulls the
+      // bytes from the dedicated streaming route instead.
+      return Response.json({
+        done: result.done,
+        status: result.status,
+        error: result.error,
+        hasVideo: Boolean(result.videoDataUrl),
+      });
     }
 
     const job = body.job;

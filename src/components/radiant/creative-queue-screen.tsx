@@ -116,7 +116,10 @@ export function CreativeQueueScreen({
           [job.id]: `started (${startData.operationName.slice(-12)})`,
         }));
 
-        for (let attempt = 0; attempt < 12; attempt++) {
+        // Veo (lite) commonly takes 1.5–2.5 min; poll for up to ~4 min so the
+        // background job resolves on its own instead of surfacing the manual
+        // "Start video job" button when a short budget runs out.
+        for (let attempt = 0; attempt < 48; attempt++) {
           await new Promise((r) => setTimeout(r, 5000));
 
           const pollResponse = await fetch("/api/vertex/veo", {
@@ -134,7 +137,7 @@ export function CreativeQueueScreen({
             done?: boolean;
             error?: string;
             status?: string;
-            videoDataUrl?: string;
+            hasVideo?: boolean;
           };
 
           if (!pollData.done) {
@@ -146,8 +149,14 @@ export function CreativeQueueScreen({
             throw new Error(pollData.error);
           }
 
-          if (pollData.videoDataUrl) {
-            setVideoByJob((prev) => ({ ...prev, [job.id]: pollData.videoDataUrl! }));
+          // The bytes are served by the streaming route (avoids piping a
+          // multi-MB base64 blob through the JSON response).
+          const videoUrl = pollData.hasVideo
+            ? `/api/vertex/veo/stream?op=${encodeURIComponent(startData.operationName)}`
+            : undefined;
+
+          if (videoUrl) {
+            setVideoByJob((prev) => ({ ...prev, [job.id]: videoUrl }));
           }
           setVeoStatusByJob((prev) => ({
             ...prev,
@@ -156,7 +165,7 @@ export function CreativeQueueScreen({
           onUpdateJob(job.id, {
             status: "done",
             outputText: pollData.status,
-            videoDataUrl: pollData.videoDataUrl,
+            videoDataUrl: videoUrl,
           });
           return;
         }
