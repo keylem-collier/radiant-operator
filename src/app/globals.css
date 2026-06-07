@@ -1,0 +1,1234 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f1e8;
+  --foreground: #171923;
+  --radiant-ink: #171923;
+  --radiant-muted: #66705d;
+  --radiant-line: #d8dacd;
+  --radiant-paper: #fffdf5;
+  --radiant-sage: #315c4b;
+  --radiant-clay: #8a633f;
+  --motion-spring: cubic-bezier(0.2, 0.9, 0.18, 1.12);
+  --motion-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --motion-fast: 160ms;
+  --motion-medium: 360ms;
+  --motion-slow: 620ms;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #171923;
+    --foreground: #fffdf5;
+  }
+}
+
+body {
+  background:
+    linear-gradient(135deg, rgba(49, 92, 75, 0.12), transparent 34%),
+    linear-gradient(225deg, rgba(138, 99, 63, 0.16), transparent 38%),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.radiant-stage {
+  background:
+    linear-gradient(120deg, rgba(255, 253, 245, 0.78), transparent 44%),
+    linear-gradient(250deg, rgba(49, 92, 75, 0.14), transparent 42%),
+    #e8e2d2;
+}
+
+.radiant-device {
+  container-type: inline-size;
+  container-name: radiant-device;
+  touch-action: manipulation;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 245, 0.94), rgba(246, 242, 231, 0.9)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(23, 25, 35, 0.025) 0,
+      rgba(23, 25, 35, 0.025) 1px,
+      transparent 1px,
+      transparent 48px
+    );
+  border: 1px solid rgba(255, 253, 245, 0.72);
+  box-shadow:
+    0 26px 80px rgba(42, 50, 38, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.motion-screen-track {
+  transition: transform var(--motion-slow) var(--motion-spring);
+  will-change: transform;
+}
+
+.motion-rise {
+  animation: motion-rise 620ms var(--motion-smooth) both;
+}
+
+.motion-card {
+  animation: motion-card 520ms var(--motion-spring) both;
+}
+
+.motion-toast {
+  animation: motion-toast 360ms var(--motion-spring) both;
+}
+
+.motion-job-card {
+  transition:
+    transform var(--motion-fast) var(--motion-spring),
+    box-shadow var(--motion-fast) ease,
+    border-color var(--motion-fast) ease;
+}
+
+.is-queue-entering .motion-job-card,
+.is-queue-entering .queue-skeleton-card {
+  animation: motion-queue-stagger 300ms var(--motion-spring) both;
+  animation-delay: var(--job-stagger, 0ms);
+}
+
+.is-queue-entering .motion-rise,
+.is-queue-entering .queue-extraction-status {
+  animation: motion-queue-rise 280ms var(--motion-smooth) both;
+}
+
+.motion-job-media {
+  animation: motion-job-media-in 320ms var(--motion-spring) both;
+}
+
+.motion-job-card:hover {
+  border-color: rgba(138, 99, 63, 0.36);
+  box-shadow: 0 22px 58px rgba(106, 92, 66, 0.2);
+  transform: translateY(-3px);
+}
+
+.radiant-action-button,
+.radiant-mic-button {
+  transition:
+    transform var(--motion-fast) var(--motion-spring),
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease;
+}
+
+.radiant-action-button:active,
+.radiant-mic-button:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.radiant-action-button {
+  border-radius: 999px;
+  background: var(--radiant-ink);
+  color: #fffdf5;
+  font-weight: 750;
+  box-shadow: 0 10px 22px rgba(23, 25, 35, 0.18);
+}
+
+.radiant-action-button:hover:not(:disabled) {
+  background: var(--radiant-sage);
+  transform: translateY(-1px);
+}
+
+.radiant-action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.radiant-mic-button:hover:not(:disabled) {
+  box-shadow: 0 18px 42px rgba(106, 92, 66, 0.22);
+  transform: translateY(-2px);
+}
+
+.radiant-mic-button.is-listening {
+  animation: mic-listening 1.6s ease-in-out infinite;
+}
+
+.radiant-voice-toggle {
+  border-radius: 999px;
+  border: 1px solid rgba(216, 218, 205, 0.92);
+  background: rgba(255, 253, 245, 0.9);
+  color: var(--radiant-ink);
+  box-shadow: 0 14px 34px rgba(106, 92, 66, 0.16);
+  transition:
+    transform var(--motion-fast) var(--motion-spring),
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease;
+}
+
+.radiant-voice-toggle:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 42px rgba(106, 92, 66, 0.22);
+}
+
+.radiant-voice-toggle:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.radiant-voice-toggle.is-active {
+  border-color: rgba(49, 92, 75, 0.42);
+  background: var(--radiant-sage);
+  color: #fffdf5;
+  box-shadow: 0 16px 36px rgba(49, 92, 75, 0.28);
+}
+
+.radiant-maya-title {
+  font-family: var(--font-bricolage), var(--font-geist-sans), sans-serif;
+  font-size: clamp(2.75rem, 11vw, 4.35rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+  color: var(--radiant-ink);
+  padding-bottom: 0.1em;
+}
+
+.radiant-advisor-page {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.radiant-advisor-footer {
+  padding-bottom: calc(3.25rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* balloons-js applies a large drop-shadow on the emoji reaction layer inline.
+   Strip it so the emoji pop-ups have no shadow. */
+text-balloons {
+  filter: none !important;
+}
+
+.radiant-advisor-stage {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Orb is anchored at a fixed point (slightly above center) so it never moves
+   when the status line or transcript appear. Status floats above it and the
+   transcript docks below it, both out of flow. */
+.radiant-advisor-core {
+  position: absolute;
+  left: 50%;
+  top: 41%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.radiant-advisor-orb {
+  position: relative;
+  padding-block: 0.5rem;
+}
+
+.radiant-advisor-status {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 0.6rem;
+  width: max-content;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.radiant-advisor-transcript-dock {
+  position: absolute;
+  top: calc(100% - 1.75rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  width: 21rem;
+  max-width: calc(100vw - 2.5rem);
+  height: 9.5rem;
+}
+
+.radiant-transcript-feed {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  /* Fade the top so older lines dissolve up into the orb instead of a hard edge */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.12) 16%,
+    #000 46%,
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.12) 16%,
+    #000 46%,
+    #000 100%
+  );
+}
+
+.radiant-transcript-feed-scroll {
+  display: flex;
+  height: 100%;
+  max-height: 100%;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.radiant-transcript-feed-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.radiant-transcript-block {
+  text-align: left;
+  /* Animate the row open so older lines glide up to make room for the new
+     message instead of being shoved up instantly when it appears. */
+  display: grid;
+  grid-template-rows: 1fr;
+  animation: radiant-transcript-block-in 460ms var(--motion-smooth) both;
+}
+
+.radiant-transcript-block-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.radiant-lightbox-in {
+  animation: radiant-lightbox-in 220ms var(--motion-smooth) both;
+}
+
+@keyframes radiant-lightbox-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes radiant-transcript-block-in {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+  to {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+
+.radiant-transcript-label {
+  margin-bottom: 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #71786a;
+}
+
+.radiant-transcript-label-advisor {
+  color: #8a7f68;
+}
+
+.radiant-transcript-user {
+  font-size: 1.28rem;
+  font-weight: 500;
+  line-height: 1.31;
+  color: #2d302b;
+  text-wrap: balance;
+}
+
+.radiant-transcript-advisor {
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #4c5148;
+  text-wrap: balance;
+}
+
+.radiant-transcript-word {
+  display: inline-block;
+  animation: radiant-transcript-word-in 300ms var(--motion-smooth) both;
+}
+
+@keyframes radiant-transcript-word-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Registered so the accent color can smoothly interpolate when the spoken
+   platform changes (Google → green, TikTok → pink, Meta → blue, Amazon → orange). */
+@property --orb-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #315c4b;
+}
+
+.voice-instrument {
+  overflow: visible;
+  --orb-accent: #315c4b;
+  transition: --orb-accent 1400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.voice-orb {
+  overflow: hidden;
+  border: 1px solid rgba(255, 253, 245, 0.72);
+  background:
+    linear-gradient(135deg, rgba(255, 253, 245, 0.98), rgba(232, 242, 228, 0.86) 26%, transparent 42%),
+    radial-gradient(
+      circle at 68% 68%,
+      color-mix(in srgb, var(--orb-accent) 90%, transparent),
+      transparent 33%
+    ),
+    radial-gradient(
+      circle at 28% 78%,
+      color-mix(in srgb, var(--orb-accent) 45%, #8a633f),
+      transparent 29%
+    ),
+    linear-gradient(
+      145deg,
+      #f8f4e8,
+      color-mix(in srgb, var(--orb-accent) 14%, #dce7d9) 52%,
+      color-mix(in srgb, var(--orb-accent) 20%, #b9c7a8)
+    );
+  box-shadow:
+    inset -18px -24px 42px color-mix(in srgb, var(--orb-accent) 24%, transparent),
+    inset 20px 18px 34px rgba(255, 255, 255, 0.62);
+  animation: voice-orb-float 5.5s ease-in-out infinite;
+  transition: --orb-accent 1400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.voice-halo {
+  display: none;
+}
+
+.voice-instrument[data-state="listening"] .voice-halo {
+  background:
+    radial-gradient(circle at 42% 38%, rgba(49, 92, 75, 0.42), transparent 48%),
+    radial-gradient(circle at 64% 62%, rgba(171, 122, 70, 0.2), transparent 52%);
+}
+
+.voice-instrument[data-state="speaking"] .voice-halo {
+  background:
+    radial-gradient(circle at 46% 40%, rgba(138, 99, 63, 0.38), transparent 44%),
+    radial-gradient(circle at 62% 62%, rgba(49, 92, 75, 0.28), transparent 54%);
+}
+
+.voice-orb::before {
+  position: absolute;
+  inset: 10%;
+  content: "";
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.82), transparent 42%),
+    radial-gradient(circle at 72% 30%, rgba(255, 255, 255, 0.56), transparent 24%);
+  mix-blend-mode: screen;
+}
+
+.voice-orb-core {
+  position: absolute;
+  inset: 29%;
+  border-radius: 999px;
+  background: rgba(255, 253, 245, 0.64);
+  box-shadow: inset 0 0 24px rgba(255, 255, 255, 0.74);
+}
+
+.voice-orb-wave {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  border-radius: 999px;
+  background: rgba(23, 25, 35, 0.54);
+  transform: translate(-50%, -50%);
+}
+
+.voice-orb-wave-a {
+  height: 34px;
+  margin-left: -18px;
+}
+
+.voice-orb-wave-b {
+  height: 54px;
+}
+
+.voice-orb-wave-c {
+  height: 26px;
+  margin-left: 18px;
+}
+
+.voice-instrument[data-state="listening"] .voice-orb-wave,
+.voice-instrument[data-state="speaking"] .voice-orb-wave {
+  animation: voice-meter 900ms ease-in-out infinite;
+}
+
+.voice-instrument[data-state="speaking"] .voice-orb-wave {
+  animation-duration: 620ms;
+}
+
+.voice-instrument[data-state="listening"] .voice-orb-wave-b,
+.voice-instrument[data-state="speaking"] .voice-orb-wave-b {
+  animation-delay: 100ms;
+}
+
+.voice-instrument[data-state="listening"] .voice-orb-wave-c,
+.voice-instrument[data-state="speaking"] .voice-orb-wave-c {
+  animation-delay: 190ms;
+}
+
+.voice-instrument[data-voice-live="true"] .voice-halo {
+  opacity: calc(0.58 + var(--voice-level) * 0.42);
+  transform: scale(calc(1 + var(--voice-level) * 0.2));
+}
+
+.voice-instrument[data-voice-live="true"] .voice-orb-wave,
+.voice-instrument[data-voice-live="true"] .voice-orb-wave-b,
+.voice-instrument[data-voice-live="true"] .voice-orb-wave-c {
+  animation: none;
+  animation-delay: 0s;
+}
+
+.voice-instrument[data-voice-live="true"] .voice-orb {
+  animation: none;
+  transition: transform 80ms ease-out;
+}
+
+.voice-instrument[data-voice-live="true"] .voice-orb-core {
+  transition: opacity 80ms ease-out, transform 80ms ease-out;
+}
+
+.voice-mark {
+  position: relative;
+  width: 22px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.voice-mark::before,
+.voice-mark::after,
+.voice-mark {
+  background:
+    linear-gradient(currentColor 0 0) 0 50% / 3px 11px no-repeat,
+    linear-gradient(currentColor 0 0) 6px 50% / 3px 22px no-repeat,
+    linear-gradient(currentColor 0 0) 12px 50% / 3px 15px no-repeat,
+    linear-gradient(currentColor 0 0) 18px 50% / 3px 24px no-repeat;
+}
+
+.queue-radar {
+  position: relative;
+  display: grid;
+  width: 11rem;
+  height: 11rem;
+  place-items: center;
+  border: 1px solid rgba(216, 218, 205, 0.84);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(255, 253, 245, 0.86), rgba(232, 242, 228, 0.68)),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 17px,
+      rgba(49, 92, 75, 0.07) 18px
+    );
+  box-shadow:
+    inset 0 0 36px rgba(255, 255, 255, 0.72),
+    0 22px 54px rgba(106, 92, 66, 0.16);
+}
+
+.queue-radar::before {
+  position: absolute;
+  width: 4.8rem;
+  height: 4.8rem;
+  content: "";
+  border-radius: 999px;
+  background: var(--radiant-sage);
+  box-shadow: 0 14px 30px rgba(49, 92, 75, 0.22);
+}
+
+.queue-radar span {
+  position: absolute;
+  border: 1px solid rgba(49, 92, 75, 0.26);
+  border-radius: 999px;
+  animation: radar-ring 2.4s ease-out infinite;
+}
+
+.queue-radar span:nth-child(1) {
+  inset: 34%;
+}
+
+.queue-radar span:nth-child(2) {
+  inset: 22%;
+  animation-delay: 300ms;
+}
+
+.queue-radar span:nth-child(3) {
+  inset: 10%;
+  animation-delay: 600ms;
+}
+
+@keyframes motion-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-card {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes motion-toast {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-job-card {
+  from {
+    opacity: 0;
+    transform: translateX(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes motion-queue-stagger {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes motion-queue-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-job-media-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes voice-orb-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -8px, 0) rotate(4deg);
+  }
+}
+
+@keyframes voice-meter {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scaleY(0.72);
+  }
+  50% {
+    transform: translate(-50%, -50%) scaleY(1.2);
+  }
+}
+
+@keyframes mic-listening {
+  0%,
+  100% {
+    box-shadow: 0 16px 36px rgba(49, 92, 75, 0.28);
+  }
+  50% {
+    box-shadow: 0 20px 48px rgba(49, 92, 75, 0.46);
+  }
+}
+
+@keyframes radar-ring {
+  0% {
+    opacity: 0.08;
+    transform: scale(0.82);
+  }
+  45% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+.radiant-livekit-pulse {
+  animation: radiant-livekit-pulse 2s ease-in-out infinite;
+}
+
+/* One-shot pop applied to the Moss pill each time memory is retrieved. */
+.radiant-moss-pulse {
+  animation: radiant-moss-pulse 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes radiant-moss-pulse {
+  0% {
+    transform: scale(1);
+    border-color: #d8dacd;
+    box-shadow: 0 0 0 0 rgba(47, 158, 68, 0);
+  }
+  28% {
+    transform: scale(1.08);
+    border-color: #2f9e44;
+    box-shadow: 0 0 0 6px rgba(47, 158, 68, 0.16);
+  }
+  100% {
+    transform: scale(1);
+    border-color: #d8dacd;
+    box-shadow: 0 0 0 0 rgba(47, 158, 68, 0);
+  }
+}
+
+@keyframes radiant-livekit-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.78);
+  }
+}
+
+/* Maya splash intro */
+.maya-splash-app {
+  flex: 1 1 0%;
+  min-height: 0;
+  opacity: 0;
+  transform: scale(0.985);
+  transition:
+    opacity 0.7s ease,
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.maya-splash-app.is-visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.maya-splash {
+  --maya-rise-dur: 0.62s;
+  --maya-tag-dur: 0.75s;
+  --maya-rise-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: inherit;
+  background: var(--radiant-paper);
+  color: var(--radiant-ink);
+  transition:
+    opacity 0.6s ease,
+    transform 0.9s cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+.maya-splash.is-clearing {
+  opacity: 0;
+  transform: translateY(-12px) scale(1.02);
+  pointer-events: none;
+}
+
+.maya-splash-intro {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 2.4vw, 26px);
+}
+
+.maya-splash-wordmark {
+  display: flex;
+  font-family: var(--font-bricolage), var(--font-geist-sans), sans-serif;
+  font-size: clamp(3rem, 18cqw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: normal;
+  white-space: nowrap;
+  color: var(--radiant-sage);
+  padding-bottom: 0.1em;
+}
+
+.maya-splash-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-inline: 0.04em;
+  padding-bottom: 0.22em;
+  margin-inline: -0.04em;
+}
+
+.maya-splash-glyph {
+  display: inline-block;
+  transform: translateY(115%);
+  will-change: transform;
+}
+
+.maya-splash.is-playing .maya-splash-glyph {
+  animation: maya-splash-rise var(--maya-rise-dur) var(--maya-rise-ease) forwards;
+}
+
+.maya-splash-tagline {
+  max-width: 20rem;
+  padding-inline: 1rem;
+  text-align: center;
+  font-size: clamp(0.875rem, 4.5cqw, 1.125rem);
+  line-height: 1.45;
+  color: var(--radiant-muted);
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(4px);
+  will-change: transform, opacity, filter;
+}
+
+.maya-splash.is-playing .maya-splash-tagline {
+  animation: maya-splash-fade-up var(--maya-tag-dur) var(--maya-rise-ease) forwards;
+}
+
+.maya-splash-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.maya-splash-layer {
+  position: absolute;
+  inset: 0;
+  display: none;
+}
+
+.maya-splash[data-bg="bloom"] .maya-splash-layer.bloom {
+  display: block;
+}
+
+.maya-splash-bloom-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(22rem, 88cqw);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: radial-gradient(
+    circle,
+    rgba(49, 92, 75, 0.1),
+    rgba(49, 92, 75, 0) 62%
+  );
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.maya-splash.is-playing[data-bg="bloom"] .maya-splash-bloom-core {
+  animation: maya-splash-bloom-in 1.7s var(--maya-rise-ease) forwards;
+}
+
+.maya-splash-step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-inline: clamp(1.25rem, 6vw, 2.5rem);
+}
+
+.maya-splash-step.is-active {
+  animation: maya-splash-step-in 0.55s var(--maya-rise-ease) both;
+}
+
+.maya-splash-step-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 1.6vw, 14px);
+  max-width: 22rem;
+  text-align: center;
+}
+
+.maya-splash-headline {
+  font-family: var(--font-bricolage), var(--font-geist-sans), sans-serif;
+  font-size: clamp(1.65rem, 8.5cqw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+  color: var(--radiant-ink);
+}
+
+.maya-splash-body {
+  font-size: clamp(0.9rem, 4.2cqw, 1.05rem);
+  line-height: 1.5;
+  color: var(--radiant-muted);
+}
+
+.maya-splash-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.maya-splash-example {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(216, 218, 205, 0.85);
+  background: rgba(255, 253, 245, 0.72);
+  font-size: clamp(0.82rem, 3.8cqw, 0.95rem);
+  line-height: 1.35;
+  color: var(--radiant-ink);
+  text-align: left;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.maya-splash.is-playing .maya-splash-example {
+  animation: maya-splash-example-in 0.55s var(--maya-rise-ease) forwards;
+}
+
+.maya-splash-example-dot {
+  flex-shrink: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--radiant-sage);
+}
+
+.maya-splash-talk-demo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.35rem;
+  padding: 1.5rem;
+}
+
+.maya-splash-talk-button {
+  position: relative;
+  z-index: 1;
+  min-width: 12.5rem;
+  padding: 1rem 2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(216, 218, 205, 0.92);
+  background: rgba(255, 253, 245, 0.9);
+  color: var(--radiant-ink);
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 14px 34px rgba(106, 92, 66, 0.16);
+  pointer-events: none;
+}
+
+.maya-splash.is-playing .maya-splash-talk-button {
+  animation: maya-splash-talk-press 2.4s ease-in-out infinite;
+}
+
+.maya-splash-ad-previews {
+  display: flex;
+  gap: 0.85rem;
+  margin-top: 0.35rem;
+}
+
+.maya-splash-ad-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+}
+
+.maya-splash.is-playing .maya-splash-ad-card {
+  animation: maya-splash-ad-in 0.6s var(--maya-rise-ease) forwards;
+}
+
+.maya-splash.is-playing .maya-splash-ad-card:nth-child(2) {
+  animation-delay: 140ms;
+}
+
+.maya-splash-ad-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(216, 218, 205, 0.9);
+  background: rgba(255, 253, 245, 0.85);
+  box-shadow: 0 12px 28px rgba(106, 92, 66, 0.12);
+}
+
+.maya-splash-ad-thumb--image {
+  background: linear-gradient(
+    145deg,
+    rgba(49, 92, 75, 0.12),
+    rgba(255, 253, 245, 0.95)
+  );
+}
+
+.maya-splash-ad-thumb--video {
+  background: linear-gradient(
+    145deg,
+    rgba(138, 99, 63, 0.14),
+    rgba(255, 253, 245, 0.95)
+  );
+}
+
+.maya-splash-ad-icon {
+  font-size: 1.35rem;
+  color: var(--radiant-sage);
+}
+
+.maya-splash-ad-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--radiant-muted);
+}
+
+.maya-splash-progress {
+  position: absolute;
+  bottom: clamp(1.5rem, 5cqw, 2.25rem);
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  gap: 0.45rem;
+  translate: -50% 0;
+}
+
+.maya-splash-progress-dot {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgba(23, 25, 35, 0.14);
+  transition: background-color 0.35s ease;
+}
+
+.maya-splash-progress-dot.is-complete {
+  background: rgba(49, 92, 75, 0.38);
+}
+
+.maya-splash-progress-dot.is-active {
+  background: var(--radiant-sage);
+}
+
+@keyframes maya-splash-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes maya-splash-example-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes maya-splash-talk-press {
+  0%,
+  45%,
+  100% {
+    transform: scale(1);
+    background: rgba(255, 253, 245, 0.9);
+    color: var(--radiant-ink);
+    border-color: rgba(216, 218, 205, 0.92);
+  }
+  55%,
+  75% {
+    transform: scale(0.97);
+    background: var(--radiant-sage);
+    color: #fffdf5;
+    border-color: rgba(49, 92, 75, 0.42);
+    box-shadow: 0 16px 36px rgba(49, 92, 75, 0.28);
+  }
+}
+
+@keyframes maya-splash-ad-in {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes maya-splash-rise {
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes maya-splash-fade-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes maya-splash-bloom-in {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.queue-skeleton-line {
+  background: linear-gradient(
+    90deg,
+    rgba(216, 218, 205, 0.45) 0%,
+    rgba(243, 239, 226, 0.95) 45%,
+    rgba(216, 218, 205, 0.45) 100%
+  );
+  background-size: 200% 100%;
+  animation: queue-skeleton-shimmer 1.35s ease-in-out infinite;
+}
+
+.queue-skeleton-dot {
+  display: inline-block;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: #8a633f;
+  animation: queue-skeleton-pulse 1s ease-in-out infinite;
+}
+
+.queue-skeleton-card {
+  transition: opacity var(--motion-fast) ease;
+}
+
+@keyframes queue-skeleton-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes queue-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+
+  .motion-screen-track,
+  .motion-job-card:hover,
+  .radiant-mic-button:hover:not(:disabled) {
+    transform: none !important;
+  }
+
+  .maya-splash-app {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+
+  .maya-splash {
+    display: none !important;
+  }
+}

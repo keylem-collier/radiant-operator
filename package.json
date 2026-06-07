@@ -1,0 +1,38 @@
+{
+  "name": "hackathon-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "smoke": "node --env-file=.env.local scripts/smoke-providers.mjs",
+    "moss:index": "node --env-file=.env.local scripts/moss-index-corpus.mjs",
+    "agent:install": "cd agent-py && uv sync",
+    "agent:dev": "cd agent-py && uv run src/agent.py dev",
+    "agent:index": "cd agent-py && uv run src/create_index.py",
+    "vercel:env": "node scripts/sync-vercel-env.mjs"
+  },
+  "dependencies": {
+    "@moss-dev/moss": "^1.1.0",
+    "assemblyai": "^4.34.4",
+    "balloons-js": "^0.0.3",
+    "google-auth-library": "^10.7.0",
+    "livekit-client": "^2.19.1",
+    "livekit-server-sdk": "^2.15.4",
+    "next": "16.2.7",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.7",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
