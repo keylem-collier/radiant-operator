@@ -56,6 +56,36 @@ export function isMicCaptureSupported(): boolean {
   );
 }
 
+let micPermissionPrimed = false;
+
+/**
+ * Pre-requests microphone permission and immediately releases the stream.
+ *
+ * On iOS Safari the permission prompt appears the first time getUserMedia runs.
+ * If that first call happens inside the hold-to-talk gesture, Safari cancels the
+ * touch (firing pointercancel) and consumes the gesture — killing the turn and
+ * preventing audio playback from unlocking. Priming permission ahead of time
+ * means the real hold gesture stays clean. Safe to call repeatedly; it only
+ * actually prompts once.
+ */
+export async function primeMicPermission(): Promise<boolean> {
+  if (micPermissionPrimed) return true;
+  if (!isMicCaptureSupported()) return false;
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach((track) => track.stop());
+    micPermissionPrimed = true;
+    log.info("mic permission primed");
+    return true;
+  } catch (err) {
+    log.warn("mic permission prime failed", {
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return false;
+  }
+}
+
 export type AssemblyAIMicOptions = {
   /**
    * Hold-to-talk mode: never finalize on silence/endpoint. The turn only ends

@@ -73,12 +73,10 @@ export function RadiantApp() {
   const [jobs, setJobs] = useState<CreativeJob[]>([]);
   const [speaking, setSpeaking] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [mossContext, setMossContext] = useState<string[]>([]);
   const [mossSource, setMossSource] = useState<"moss" | "local" | null>(null);
   const [liveKitConnected, setLiveKitConnected] = useState(false);
   const [extractionPending, setExtractionPending] = useState(0);
-  const [extractionError, setExtractionError] = useState<string | null>(null);
   const [lastExtractionEmpty, setLastExtractionEmpty] = useState(false);
   const roomRef = useRef<Room | null>(null);
   const jobsRef = useRef<CreativeJob[]>([]);
@@ -297,9 +295,7 @@ export function RadiantApp() {
     async (text: string, meta?: SendMessageMeta) => {
       unlockAudioPlayback();
       handleUserGesture();
-      setError(null);
       setBusy(true);
-      setExtractionError(null);
       setLastExtractionEmpty(false);
       log.info("handleSendMessage", { textLength: text.length });
 
@@ -335,7 +331,6 @@ export function RadiantApp() {
           );
 
           if (error) {
-            setExtractionError(error);
             log.error("creative extract error", { error, ms: Date.now() - started });
           } else if (newJobs.length > 0) {
             setJobs((prev) => {
@@ -362,15 +357,12 @@ export function RadiantApp() {
       void runBackgroundExtraction();
 
       try {
-        const ttsWarning = await processAdvisorTurn(
+        await processAdvisorTurn(
           turnsWithUser,
           text,
           { latestJobs: [], queuedJobs: jobsRef.current },
           latency,
         );
-        if (ttsWarning) {
-          setError(ttsWarning);
-        }
         log.info("handleSendMessage ok");
       } catch (err) {
         if (abortController.signal.aborted) {
@@ -379,7 +371,6 @@ export function RadiantApp() {
         }
         const message = err instanceof Error ? err.message : "Something went wrong";
         log.error("handleSendMessage failed", { error: message });
-        setError(formatUserError(message));
       } finally {
         if (turnAbortRef.current === abortController) {
           turnAbortRef.current = null;
@@ -582,15 +573,6 @@ export function RadiantApp() {
         ref={mainRef}
         className="radiant-device relative mx-auto flex h-full w-full max-w-md touch-manipulation flex-col overflow-hidden sm:my-6 sm:h-[calc(100dvh-3rem)] sm:max-h-[calc(100dvh-3rem)] sm:rounded-[2rem]"
       >
-        {error && (
-          <p
-            className="motion-toast pointer-events-none absolute inset-x-4 top-[max(0.85rem,env(safe-area-inset-top,0px))] z-[70] rounded-2xl border border-[#f0b9b6] bg-[#fff7f2]/96 px-4 py-3 text-center text-xs font-medium leading-5 text-[#982f2a] shadow-lg shadow-[#df7d74]/20 backdrop-blur sm:text-sm"
-            role="alert"
-          >
-            {error}
-          </p>
-        )}
-
         <MayaSplashIntro>
           <Balloons ref={balloonsRef} containerRef={mainRef} />
           <div
@@ -609,7 +591,6 @@ export function RadiantApp() {
                 onSendMessage={handleSendMessage}
                 onInterruptAgent={handleInterruptAgent}
                 onUserGesture={handleUserGesture}
-                onVoiceError={(message) => setError(formatUserError(message))}
                 mossContext={mossContext}
                 mossSource={mossSource}
                 liveKitConnected={liveKitConnected}
@@ -624,7 +605,6 @@ export function RadiantApp() {
                 onUpdateJob={handleUpdateJob}
                 scrollRef={queueScrollRef}
                 extractionPending={extractionPending}
-                extractionError={extractionError}
                 hasConversation={turns.length > 0}
                 lastExtractionEmpty={lastExtractionEmpty}
                 active={screen === "queue"}

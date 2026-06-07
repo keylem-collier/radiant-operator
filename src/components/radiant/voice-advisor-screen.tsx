@@ -11,6 +11,7 @@ import { GlowingOrb } from "@/components/radiant/glowing-orb";
 import { TranscriptFeed } from "@/components/radiant/transcript-feed";
 import {
   isMicCaptureSupported,
+  primeMicPermission,
   startAssemblyAIMic,
 } from "@/lib/radiant/assemblyai-mic";
 import { useMicLevel } from "@/lib/radiant/use-mic-level";
@@ -253,6 +254,15 @@ export function VoiceAdvisorScreen({
       stopListening();
     }
   }, [active, stopListening]);
+
+  // Pre-grant mic permission as soon as the voice screen is live, so the very
+  // first hold-to-talk gesture isn't hijacked by Safari's permission prompt
+  // (which otherwise cancels the touch and blocks audio playback unlocking).
+  useEffect(() => {
+    if (active && micSupported) {
+      void primeMicPermission();
+    }
+  }, [active, micSupported]);
 
   useEffect(() => {
     return () => {

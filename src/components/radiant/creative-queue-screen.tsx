@@ -14,7 +14,6 @@ type CreativeQueueScreenProps = {
   onUpdateJob: (jobId: string, patch: Partial<CreativeJob>) => void;
   scrollRef?: RefObject<HTMLDivElement | null>;
   extractionPending?: number;
-  extractionError?: string | null;
   hasConversation?: boolean;
   lastExtractionEmpty?: boolean;
   active?: boolean;
@@ -25,7 +24,6 @@ export function CreativeQueueScreen({
   onUpdateJob,
   scrollRef,
   extractionPending = 0,
-  extractionError = null,
   hasConversation = false,
   lastExtractionEmpty = false,
   active = false,
@@ -251,15 +249,6 @@ export function CreativeQueueScreen({
 
   return (
     <div className={queueShellClass}>
-      {extractionError && (
-        <p
-          className="motion-rise mb-4 shrink-0 rounded-2xl border border-[#f0b9b6] bg-[#fff7f2]/94 px-4 py-3 text-sm font-medium text-[#982f2a]"
-          role="alert"
-        >
-          Queue extraction failed: {extractionError}
-        </p>
-      )}
-
       <CreativeQueueExtractionStatus active={isExtracting} />
 
       {showWaitingState && (
