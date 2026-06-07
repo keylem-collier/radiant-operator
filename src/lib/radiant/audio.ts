@@ -60,22 +60,38 @@ function attachPlaybackMeter(audio: HTMLAudioElement): () => void {
     rafId = requestAnimationFrame(tick);
   };
 
-  const startMeter = () => {
+  const startMeter = async () => {
     if (metering) return;
 
     try {
-      context = new AudioContext();
-      analyser = context.createAnalyser();
+      const ctx = new AudioContext();
+      context = ctx;
+
+      // CRITICAL: only reroute the element's output into the Web Audio graph
+      // once the context is actually running. createMediaElementSource hijacks
+      // the element's audio, so if the context is suspended (e.g. iOS in a
+      // record-oriented session after getUserMedia) the audio would be routed
+      // into a dead graph and Maya would be silent. If it can't run, bail out
+      // and let the element play straight to the speakers (no visual meter).
+      await ctx.resume().catch(() => undefined);
+      if (ctx !== context || ctx.state !== "running") {
+        if (ctx === context) {
+          void ctx.close();
+          context = null;
+        }
+        return;
+      }
+
+      analyser = ctx.createAnalyser();
       analyser.fftSize = 256;
       analyser.smoothingTimeConstant = 0.72;
 
-      const source = context.createMediaElementSource(audio);
+      const source = ctx.createMediaElementSource(audio);
       source.connect(analyser);
-      analyser.connect(context.destination);
+      analyser.connect(ctx.destination);
 
       freqData = new Uint8Array(analyser.frequencyBinCount);
       metering = true;
-      void context.resume();
       tick();
     } catch (err) {
       log.warn("playback meter unavailable", {
